@@ -281,11 +281,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
           this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
           this.helper.flushBufferData(this.indicesBuffer_);
 
-          this.renderTransform_ = projectionTransform;
-          makeInverseTransform(
-            this.invertRenderTransform_,
-            this.renderTransform_
-          );
+          // this.renderTransform_ = projectionTransform;
+          // makeInverseTransform(
+          //   this.invertRenderTransform_,
+          //   this.renderTransform_
+          // );
           if (received.hitDetection) {
             this.hitRenderInstructions_ = new Float32Array(
               event.data.renderInstructions
@@ -452,13 +452,16 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       const extent = buffer(frameState.extent, renderBuffer * resolution);
       vectorSource.loadFeatures(extent, resolution, projection);
 
-      this.rebuildBuffers_(frameState);
       this.previousExtent_ = frameState.extent.slice();
+
+      if (sourceChanged){
+        this.rebuildBuffers_(frameState);
+      }
     }
 
     // apply the current projection transform with the invert of the one used to fill buffers
     this.helper.makeProjectionTransform(frameState, this.currentTransform_);
-    multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
+    // multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
 
     this.helper.useProgram(this.program_);
     this.helper.prepareDraw(frameState);
@@ -523,7 +526,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
       tmpCoords[0] = geometry.getFlatCoordinates()[0];
       tmpCoords[1] = geometry.getFlatCoordinates()[1];
-      applyTransform(projectionTransform, tmpCoords);
+      // applyTransform(projectionTransform, tmpCoords);
 
       hitColor = colorEncodeId(hitIndex + 6, tmpColor);
 
